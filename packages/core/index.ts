@@ -1,6 +1,6 @@
 import { makeInstaller } from "@stfly-element/utils";
 import components from "./components";
-import '@stfly-element/theme/index.css'
+import '@stfly-element/theme/index.css';
 
 const installer = makeInstaller(components);
 
