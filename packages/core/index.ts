@@ -4,5 +4,5 @@ import '@stfly-element/theme/index.css';
 
 const installer = makeInstaller(components);
 
-export * from "@stfly-element/components";
+export * from "../components";
 export default installer;
