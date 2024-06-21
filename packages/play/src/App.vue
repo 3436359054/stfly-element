@@ -3,7 +3,7 @@ import HelloWorld from './components/HelloWorld.vue'
 </script>
 
 <template>
-  <fly-button />
+  <fly-button type="primary" size="small">test</fly-button>
 </template>
 
 <style scoped>
