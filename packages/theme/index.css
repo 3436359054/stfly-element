@@ -1,1 +1,67 @@
-@import "./reset.css";
+@import './reset.css';
+
+:root {
+  /* colors */
+  --fly-color-white: #ffffff;
+  --fly-color-black: #000000;
+  --colors: (primary: #409eff, success: #67c23a, warning: #e6a23c, danger: #f56c6c, info: #909399);
+  --fly-bg-color: #ffffff;
+  --fly-bg-color-page: #f2f3f5;
+  --fly-bg-color-overlay: #ffffff;
+  --fly-text-color-primary: #303133;
+  --fly-text-color-regular: #606266;
+  --fly-text-color-secondary: #909399;
+  --fly-text-color-placeholder: #a8abb2;
+  --fly-text-color-disabled: #c0c4cc;
+  --fly-border-color: #dcdfe6;
+  --fly-border-color-light: #e4e7ed;
+  --fly-border-color-lighter: #ebeef5;
+  --fly-border-color-extra-light: #f2f6fc;
+  --fly-border-color-dark: #d4d7de;
+  --fly-border-color-darker: #cdd0d6;
+  --fly-fill-color: #f0f2f5;
+  --fly-fill-color-light: #f5f7fa;
+  --fly-fill-color-lighter: #fafafa;
+  --fly-fill-color-extra-light: #fafcff;
+  --fly-fill-color-dark: #ebedf0;
+  --fly-fill-color-darker: #e6e8eb;
+  --fly-fill-color-blank: #ffffff;
+  
+  @each $val, $color in var(--colors) {
+    --fly-color-$(val): $(color);
+    @for $i from 3 to 9 {
+      --fly-color-$(val)-light-$(i): mix(#fff, $(color), 0.$(i));
+    }
+    --fly-color-$(val)-dark-2: mix(#000, $(color), 0.2);
+  }
+
+  /* border */
+  --fly-border-width: 1px;
+  --fly-border-style: solid;
+  --fly-border-color-hover: var(--fly-text-color-disabled);
+  --fly-border: var(--fly-border-width) var(--fly-border-style) var(--fly-border-color);
+  --fly-border-radius-base: 4px;
+  --fly-border-radius-small: 2px;
+  --fly-border-radius-round: 20px;
+  --fly-border-radius-circle: 100%;
+
+  /*font*/
+  --fly-font-size-extra-large: 20px;
+  --fly-font-size-large: 18px;
+  --fly-font-size-medium: 16px;
+  --fly-font-size-base: 14px;
+  --fly-font-size-small: 13px;
+  --fly-font-size-extra-small: 12px;
+  --fly-font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB',
+    'Microsoft YaHei', '\5fae\8f6f\96c5\9ed1', Arial, sans-serif;
+  --fly-font-weight-primary: 500;
+
+  /*disabled*/
+  --fly-disabled-bg-color: var(--fly-fill-color-light);
+  --fly-disabled-text-color: var(--fly-text-color-placeholder);
+  --fly-disabled-border-color: var(--fly-border-color-light);
+
+  /*animation*/
+  --fly-transition-duration: 0.4s;
+  --fly-transition-duration-fast: 0.2s;
+}

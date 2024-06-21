@@ -1,0 +1,199 @@
+.fly-button-group {
+  --fly-button-group-border-color: var(--fly-border-color-lighter);
+}
+.fly-button {
+  --fly-button-font-weight: var(--fly-font-weight-primary);
+  --fly-button-border-color: var(--fly-border-color);
+  --fly-button-bg-color: var(--fly-fill-color-blank);
+  --fly-button-text-color: var(--fly-text-color-regular);
+  --fly-button-disabled-text-color: var(--fly-disabled-text-color);
+  --fly-button-disabled-bg-color: var(--fly-fill-color-blank);
+  --fly-button-disabled-border-color: var(--fly-border-color-light);
+  --fly-button-hover-text-color: var(--fly-color-primary);
+  --fly-button-hover-bg-color: var(--fly-color-primary-light-9);
+  --fly-button-hover-border-color: var(--fly-color-primary-light-7);
+  --fly-button-active-text-color: var(--fly-button-hover-text-color);
+  --fly-button-active-border-color: var(--fly-color-primary);
+  --fly-button-active-bg-color: var(--fly-button-hover-bg-color);
+  --fly-button-outline-color: var(--fly-color-primary-light-5);
+  --fly-button-active-color: var(--fly-text-color-primary);
+}
+
+.fly-button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  line-height: 1;
+  height: 32px;
+  white-space: nowrap;
+  cursor: pointer;
+  color: var(--fly-button-text-color);
+  text-align: center;
+  box-sizing: border-box;
+  outline: none;
+  transition: 0.1s;
+  font-weight: var(--fly-button-font-weight);
+  user-select: none;
+  vertical-align: middle;
+  -webkit-appearance: none;
+  background-color: var(--fly-button-bg-color);
+  border: var(--fly-border);
+  border-color: var(--fly-button-border-color);
+  padding: 8px 15px;
+  font-size: var(--fly-font-size-base);
+  border-radius: var(--fly-border-radius-base);
+  & + & {
+    margin-left: 12px;
+  }
+  &:hover,
+  &:focus {
+    color: var(--fly-button-hover-text-color);
+    border-color: var(--fly-button-hover-border-color);
+    background-color: var(--fly-button-hover-bg-color);
+    outline: none;
+  }
+  &:active {
+    color: var(--fly-button-active-text-color);
+    border-color: var(--fly-button-active-border-color);
+    background-color: var(--fly-button-active-bg-color);
+    outline: none;
+  }
+  /*plain*/
+  &.is-plain {
+    --fly-button-hover-text-color: var(--fly-color-primary);
+    --fly-button-hover-bg-color: var(--fly-fill-color-blank);
+    --fly-button-hover-border-color: var(--fly-color-primary);
+  }
+  /*round*/
+  &.is-round {
+    border-radius: var(--fly-border-radius-round);
+  }
+  /*circle*/
+  &.is-circle {
+    border-radius: 50%;
+    padding: 8px;
+  }
+  /*disabled*/
+  &.is-loading,
+  &.is-disabled,
+  &.is-disabled:hover,
+  &.is-disabled:focus,
+  &[disabled],
+  &[disabled]:hover,
+  &[disabled]:focus {
+    color: var(--fly-button-disabled-text-color);
+    cursor: not-allowed;
+    background-image: none;
+    background-color: var(--fly-button-disabled-bg-color);
+    border-color: var(--fly-button-disabled-border-color);
+  }
+  [class*='fly-icon'] {
+    width: 1em;
+    height: 1em;
+  }
+}
+@each $val in primary, success, warning, info, danger {
+  .fly-button--$(val) {
+    --fly-button-text-color: var(--fly-color-white);
+    --fly-button-bg-color: var(--fly-color-$(val));
+    --fly-button-border-color: var(--fly-color-$(val));
+    --fly-button-outline-color: var(--fly-color-$(val)-light-5);
+    --fly-button-active-color: var(--fly-color-$(val)-dark-2);
+    --fly-button-hover-text-color: var(--fly-color-white);
+    --fly-button-hover-bg-color: var(--fly-color-$(val)-light-3);
+    --fly-button-hover-border-color: var(--fly-color-$(val)-light-3);
+    --fly-button-active-bg-color: var(--fly-color-$(val)-dark-2);
+    --fly-button-active-border-color: var(--fly-color-$(val)-dark-2);
+    --fly-button-disabled-text-color: var(--fly-color-white);
+    --fly-button-disabled-bg-color: var(--fly-color-$(val)-light-5);
+    --fly-button-disabled-border-color: var(--fly-color-$(val)-light-5);
+  }
+  .fly-button--$(val).is-plain {
+    --fly-button-text-color: var(--fly-color-$(val));
+    --fly-button-bg-color: var(--fly-color-$(val)-light-9);
+    --fly-button-border-color: var(--fly-color-$(val)-light-5);
+    --fly-button-hover-text-color: var(--fly-color-white);
+    --fly-button-hover-bg-color: var(--fly-color-$(val));
+    --fly-button-hover-border-color: var(--fly-color-$(val));
+    --fly-button-active-text-color: var(--fly-color-white);
+
+    --fly-button-disabled-text-color: var(--fly-color-$(val)-light-5);
+    --fly-button-disabled-bg-color: var(--fly-color-$(val)-light-9);
+    --fly-button-disabled-border-color: var(--fly-color-$(val)-light-8);
+  }
+}
+.fly-button--large {
+  --fly-button-size: 40px;
+  height: var(--fly-button-size);
+  padding: 12px 19px;
+  font-size: var(--fly-font-size-base);
+  border-radius: var(--fly-border-radius-base);
+  /*circle*/
+  &.is-circle {
+    border-radius: 50%;
+    padding: 12px;
+  }
+}
+.fly-button--small {
+  --fly-button-size: 24px;
+  height: var(--fly-button-size);
+  padding: 5px 11px;
+  font-size: 12px;
+  border-radius: calc(var(--fly-border-radius-base) - 1px);
+  /*circle*/
+  &.is-circle {
+    border-radius: 50%;
+    padding: 5px;
+  }
+  [class*='fly-icon'] {
+    width: 12px;
+    height: 12px;
+  }
+}
+
+.fly-button-group {
+  display: inline-block;
+  vertical-align: middle;
+
+  &::after {
+    clear: both;
+  }
+  & > :deep(.fly-button){
+    float: left;
+    position: relative;
+    margin-left: 0;
+    &:first-child{
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+      border-right-color: var(--fly-button-group-border-color);
+    }
+    &:last-child{
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0; 
+      border-left-color: var(--fly-button-group-border-color);
+    }
+    &:not(:first-child):not(:last-child) {
+      border-radius: 0;
+
+      border-left-color: var(--fly-button-group-border-color);
+      border-right-color: var(--fly-button-group-border-color);
+    }
+    &:not(:last-child) {
+      margin-right: -1px;
+    }
+    &:first-child:last-child {
+      border-top-right-radius: var(--fly-border-radius-base);
+      border-bottom-right-radius: var(--fly-border-radius-base);
+      border-top-left-radius: var(--fly-border-radius-base);
+      border-bottom-left-radius: var(--fly-border-radius-base);
+
+      &.is-round {
+        border-radius: var(--fly-border-radius-round);
+      }
+
+      &.is-circle {
+        border-radius: 50%;
+      }
+    }
+  }
+}
