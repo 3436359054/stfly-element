@@ -1,19 +1,43 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import type { ButtonProps } from './types.ts'
+import { computed, ref } from 'vue'
+
+import type { ButtonProps, ButtonEmits, ButtonInstance } from "./types";
+import { throttle } from 'lodash-es';
+import FlyIcon from "../Icon/Icon.vue";
+
 defineOptions({
   name: 'FlyButton',
 })
 const props = withDefaults(defineProps<ButtonProps>(), {
   tag: 'button',
-  nativeType: 'button'
+  nativeType: 'button',
+  useThrottle: true,
+  throttleDuration: 500,
 })
-const slot = defineSlots();
-const _ref = ref<HTMLButtonElement>()
+const emits = defineEmits<ButtonEmits>();
+
+const slots = defineSlots();
+
+const _ref = ref<HTMLButtonElement>();
+ 
+defineExpose<ButtonInstance>({
+  ref: _ref
+})
+
+const iconStyle = computed(() => ({
+  marginRight: slots.default ? "6px" : "0px"
+}))
+
+const handleBtnClick = (e: MouseEvent) => {
+  emits("click", e);
+}
+
+const handlBtneCLickThrottle = throttle(handleBtnClick, props.throttleDuration);
+
 </script>
 <template>
   <component 
-    :is="props.tag" 
+    :is="tag" 
     :ref="_ref"
     class="fly-button"
     :type="tag === 'button' ? nativeType : undefined" 
@@ -27,7 +51,29 @@ const _ref = ref<HTMLButtonElement>()
       'is-disabled': disabled,
       'is-loading': loading
     }"
+    :autofocus="autofocus"
+    @click="
+      (e: MouseEvent) => 
+        useThrottle ? handlBtneCLickThrottle(e) : handleBtnClick(e)
+    "
   >
+  <template v-if="loading">
+      <slot name="loading">
+        <fly-icon
+          class="loading-icon"
+          :icon="loadingIcon ?? 'spinner'"
+          :style="iconStyle"
+          size="1x"
+          spin
+        />
+      </slot>
+    </template>
+    <fly-icon
+      :icon="icon"
+      size="1x"
+      :style="iconStyle"
+      v-if="icon && !loading"
+    />
     <slot></slot>
   </component>
 </template>
