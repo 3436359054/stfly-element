@@ -1,4 +1,11 @@
 #!/bin/bash
+# 脚本说明
+# 功能:
+# 把当前分支提交到Test分支
+
+# 注意事项
+# 1. 当前分支存在未提交的更改会自动提交
+# 2. 遇到冲突脚本会停止
 
 # ANSI color codes for colored output
 RED='\033[0;31m'
@@ -14,9 +21,7 @@ WARNING_ICON="[!]"
 SUCCESS_ICON="[✔]"
 ERROR_ICON="[✗]"
 
-# 获取当前日期，格式化为YYYYMMDD
-current_date=$(date +%Y%m%d)
-target_branch="master-$current_date" # 目标分支
+target_branch="test" # 目标分支
 current_branch=$(git rev-parse --abbrev-ref HEAD) # 当前分支
 
 # 检查是否有未提交的更改
@@ -37,14 +42,12 @@ fi
 
 # 检查目标分支是否已经存在
 if git show-ref --verify --quiet "refs/heads/$target_branch"; then
-    echo "${INFO_ICON}${BLUE} 目标分支 ${target_branch} 已存在，正在切换并拉取最新代码。${NC}"
+    echo "${INFO_ICON}${BLUE} 目标分支 ${target_branch} 存在，正在切换并拉取最新代码。${NC}"
     git checkout $target_branch
     git pull
 else
-    echo "${INFO_ICON}${BLUE} 目标分支 ${target_branch} 不存在，正在创建。${NC}"
-    git checkout -b $target_branch
-    echo "${INFO_ICON}${BLUE} 正在将新分支 ${target_branch} 推送到远程仓库。${NC}"
-    git push --set-upstream origin $target_branch
+    echo "${INFO_ICON}${BLUE} 目标分支 ${target_branch} 不存在。${NC}"
+    exit 1
 fi
 
 # 合并当前分支到目标分支
