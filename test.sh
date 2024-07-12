@@ -57,6 +57,7 @@ git merge $current_branch --no-ff
 merge_status=$(git status)
 if echo "$merge_status" | grep -qE '(unmerged|both modified)'; then
     echo "${ERROR_ICON}${RED} 合并时发现冲突，请解决冲突后再继续。${NC}"
+    exit 1
 fi
 
 # 推送合并结果到远程仓库
