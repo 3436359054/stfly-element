@@ -24,8 +24,6 @@ if git status --porcelain | grep -q .; then
     echo "${INFO_ICON}${BLUE} 发现未提交的更改在当前分支。${NC}"
     git add .
     
-    # read -p "${CYAN}请输入提交信息（当前分支）: ${NC}" commit_message
-    
     # 执行提交
     git commit -m "$current_branch"
     
@@ -66,6 +64,6 @@ fi
 # git commit -m "$merge_commit_message"
 
 # 推送合并结果到远程仓库
-echo "${INFO_ICON}${BLUE} 正在推送合并结果到远程仓库...${NC}"
+echo "${INFO_ICON}${BLUE} 正在推送合并结果到远程仓库(${target_branch})...${NC}"
 git push
-echo "${SUCCESS_ICON}${GREEN} 合并结果已成功推送至远程仓库。${NC}"
+echo "${SUCCESS_ICON}${GREEN} 合并结果已成功推送至远程仓库(${target_branch})。${NC}"
