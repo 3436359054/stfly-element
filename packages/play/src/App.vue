@@ -2,6 +2,4 @@
 </script>
 <template>
   <fly-button type="primary" size="small">测试3</fly-button>
-  <fly-button type="primary" size="small">测试2222</fly-button>
-  <fly-button type="primary" size="small">测试222</fly-button>
 </template>
