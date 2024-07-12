@@ -46,15 +46,16 @@ else
     echo "${INFO_ICON}${BLUE} 目标分支 ${target_branch} 不存在，正在创建。${NC}"
     git checkout -b $target_branch
     echo "${INFO_ICON}${BLUE} 正在将新分支 ${target_branch} 推送到远程仓库。${NC}"
-    git push $target_branch
+    git push --set-upstream origin $target_branch
 fi
 
 # 合并当前分支到目标分支
 echo "${INFO_ICON}${BLUE} 正在将${current_branch}分支合并当前分支到 ${target_branch}...${NC}"
-git merge $current_branch
+git merge $current_branch --no-ff
 
 # 检查合并是否有冲突
-if git diff --name-only --diff-filter=U; then
+merge_status=$(git merge --stat | awk '/^Conflicts:/ {print $2}')
+if [[ $merge_status == "Conflicts:"* ]]; then
     echo "${ERROR_ICON}${RED} 合并时发现冲突，请解决冲突后再继续。${NC}"
     exit 1
 fi
