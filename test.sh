@@ -18,7 +18,7 @@ if git status --porcelain | grep -q .; then
     
     # 推送提交到远程仓库
     echo "执行git push'$commit_message'"
-    git push orgin $current_branch
+    git push origin $current_branch
 else
     echo "没有发现需要提交的代码 '$current_branch'."
 fi
