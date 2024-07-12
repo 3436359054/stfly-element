@@ -21,7 +21,7 @@ current_branch=$(git rev-parse --abbrev-ref HEAD) # 当前分支
 
 # 检查是否有未提交的更改
 if git status --porcelain | grep -q .; then
-    echo "${INFO_ICON}${BLUE} 发现未提交的更改在当前分支。${NC}"
+    echo "${INFO_ICON}${BLUE} 发现未提交的更改在当前分支(${current_branch})。${NC}"
     git add .
     
     # read -p "${CYAN}请输入提交信息（当前分支）: ${NC}" commit_message
@@ -54,16 +54,10 @@ echo "${INFO_ICON}${BLUE} 正在将${current_branch}分支合并当前分支到 
 git merge $current_branch --no-ff
 
 # 检查合并是否有冲突
-merge_status=$(git merge --stat | awk '/^Conflicts:/ {print $2}')
-if [[ $merge_status == "Conflicts:"* ]]; then
+merge_status=$(git status)
+if echo "$merge_status" | grep -qE '(unmerged|both modified)'; then
     echo "${ERROR_ICON}${RED} 合并时发现冲突，请解决冲突后再继续。${NC}"
-    exit 1
 fi
-
-# 提交合并结果
-# git add .
-# read -p "${CYAN}请输入合并提交的信息: ${NC}" merge_commit_message
-# git commit -m "$merge_commit_message"
 
 # 推送合并结果到远程仓库
 echo "${INFO_ICON}${BLUE} 正在推送合并结果到远程仓库...${NC}"
