@@ -38,6 +38,8 @@ if git status --porcelain | grep -q .; then
     echo "${SUCCESS_ICON}${GREEN} 当前分支($current_branch)已成功提交并推送至远程仓库。${NC}"
 else
     echo "${WARNING_ICON}${YELLOW} 当前分支($current_branch)上没有更改需要提交。${NC}"
+    echo "${WARNING_ICON}${YELLOW} 请检查是否git push了。${NC}"
+    exit 1
 fi
 
 # 检查目标分支是否已经存在

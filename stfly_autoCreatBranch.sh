@@ -36,8 +36,9 @@ git pull
 
 # 检查目标分支是否已经存在
 if git show-ref --verify --quiet "refs/heads/$target_branch"; then
-    echo "${INFO_ICON}${BLUE} 目标分支 ${target_branch} 已存在，正在切换并拉取最新代码。${NC}"
+    echo "${INFO_ICON}${RED} 目标分支 ${target_branch} 已存在，正在切换到该分支。${NC}"
     git checkout $target_branch
+    echo "${INFO_ICON}${BLUE} 正在拉取代码...${NC}"
     git pull
 else
     echo "${INFO_ICON}${BLUE} 目标分支 ${target_branch} 不存在${NC}"
@@ -45,22 +46,24 @@ else
 fi
 
 read -p "${CYAN}请输入需要创建的分支名${NC}" newBranch
+
 if [ -z "$newBranch" ]; then
     echo "${ERROR_ICON}${RED}请输入分支名${NC}"
     exit 1
 fi
 
-# 检查目标分支是否已经存在
+# 检查新创建的分支是否已经存在
 if git show-ref --verify --quiet "refs/heads/$newBranch"; then
-    echo "${INFO_ICON}${BLUE} 目标分支 ${newBranch} 已存在，正在切换并拉取最新代码。${NC}"
+    echo "${INFO_ICON}${RED} 分支 ${newBranch} 已存在，正在切换到该分支。${NC}"
     git checkout $newBranch
+    echo "${INFO_ICON}${BLUE} 正在拉取代码...${NC}"
     git pull
-    echo "${INFO_ICON}${BLUE} 拉取成功${NC}"
-    echo "${INFO_ICON}${BLUE} 程序执行完成${NC}"
+    echo "${SUCCESS_ICON}${GREEN} 拉取成功,程序执行完成${NC}"
     exit 1
 fi
 
-echo "${INFO_ICON}${BLUE}正在创建${newBranch}分支${NC}"
+echo "${INFO_ICON}${BLUE}正在创建${newBranch}分支...${NC}"
 git checkout -b $newBranch
-echo "${INFO_ICON}${BLUE} 正在将新分支 ${newBranch} 推送到远程仓库。${NC}"
+echo "${INFO_ICON}${BLUE} 正在将新分支 ${newBranch} 推送到远程仓库...${NC}"
 git push --set-upstream origin $newBranch
+echo "${SUCCESS_ICON}${GREEN} 分支创建完成${NC}"
