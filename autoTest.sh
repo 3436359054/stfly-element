@@ -26,20 +26,29 @@ current_branch=$(git rev-parse --abbrev-ref HEAD) # 当前分支
 
 # 检查是否有未提交的更改
 if git status --porcelain | grep -q .; then
-    echo "${INFO_ICON}${BLUE} 发现未提交的更改在当前分支。${NC}"
+    echo "${WARNING_ICON}${YELLOW} 发现未提交的更改在当前分支。${NC}"
+
+    # 执行git add .
+    echo "${INFO_ICON}${BLUE} 执行git add ."
     git add .
     
-    # 执行提交
+    # 执行git commit -m $current_branch...
+    echo "${INFO_ICON}${BLUE} 执行git commit -m $current_branch...${NC}"
     git commit -m "$current_branch"
     
-    # 推送提交到远程仓库
-    echo "${INFO_ICON}${BLUE} 正在推送当前分支($current_branch)到远程仓库...${NC}"
+    # 执行git push
+    echo "${INFO_ICON}${BLUE} 执行git push将分支($current_branch)推送到远程仓库...${NC}"
     git push
     echo "${SUCCESS_ICON}${GREEN} 当前分支($current_branch)已成功提交并推送至远程仓库。${NC}"
-else
-    echo "${WARNING_ICON}${YELLOW} 当前分支($current_branch)上没有更改需要提交。${NC}"
-    echo "${WARNING_ICON}${YELLOW} 请检查是否git push了。${NC}"
-    exit 1
+fi
+# 检查当前分支是否未提交到远程仓库
+git_status = $(git status --porcelain -b)
+if [[ $git_status =~ ahead\ [0-9]+ ]] then
+    echo "${WARNING_ICON}${YELLOW} 发现当前分支未提交到远程。${NC}"
+    # 执行git push
+    echo "${INFO_ICON}${BLUE} 执行git push将分支($current_branch)推送到远程仓库...${NC}"
+    git push
+    echo "${SUCCESS_ICON}${GREEN} 当前分支($current_branch)已成功提交并推送至远程仓库。${NC}"
 fi
 
 # 检查目标分支是否已经存在
@@ -48,7 +57,7 @@ if git show-ref --verify --quiet "refs/heads/$target_branch"; then
     git checkout $target_branch
     git pull
 else
-    echo "${INFO_ICON}${BLUE} 目标分支 ${target_branch} 不存在。${NC}"
+    echo "${ERROR_ICON}${RED} 目标分支 ${target_branch} 不存在。${NC}"
     exit 1
 fi
 
@@ -57,9 +66,9 @@ echo "${INFO_ICON}${BLUE} 正在将${current_branch}分支合并当前分支到 
 git merge $current_branch --no-ff
 
 # 检查合并是否有冲突
-merge_status=$(git merge --stat | awk '/^Conflicts:/ {print $2}')
-if [[ $merge_status == "Conflicts:"* ]]; then
-    echo "${ERROR_ICON}${RED} 合并时发现冲突，请解决冲突后再继续。${NC}"
+merge_status=$(git status)
+if echo "$merge_status" | grep -qE '(unmerged|both modified)'; then
+    echo "${ERROR_ICON}${RED} 合并时发现冲突, 脚本停止运行${NC}"
     exit 1
 fi
 
