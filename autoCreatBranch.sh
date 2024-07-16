@@ -45,7 +45,7 @@ else
     exit 1
 fi
 
-read -p "${CYAN}请输入需要创建的分支名${NC}" newBranch
+read -p "请输入需要创建的分支名:" newBranch
 
 if [ -z "$newBranch" ]; then
     echo "${ERROR_ICON}${RED}请输入分支名${NC}"
