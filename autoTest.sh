@@ -53,8 +53,9 @@ fi
 
 # 检查目标分支是否已经存在
 if git show-ref --verify --quiet "refs/heads/$target_branch"; then
-    echo "${INFO_ICON}${BLUE} 目标分支 ${target_branch} 存在，正在切换并拉取最新代码。${NC}"
+    echo "${INFO_ICON}${BLUE} 正在切换到${target_branch}...${NC}"
     git checkout $target_branch
+    echo "${INFO_ICON}${BLUE} 拉取最新代码...${NC}"
     git pull
 else
     echo "${ERROR_ICON}${RED} 目标分支 ${target_branch} 不存在。${NC}"
