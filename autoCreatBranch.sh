@@ -20,26 +20,32 @@ WARNING_ICON="[!]"
 SUCCESS_ICON="[✔]"
 ERROR_ICON="[✗]"
 
-# 获取当前日期，格式化为YYYYMMDD
-current_date=$(date +%Y%m%d)
 target_branch="develop" # 目标分支
 current_branch=$(git rev-parse --abbrev-ref HEAD) # 当前分支
 
 # 检查是否有未提交的更改
 if git status --porcelain | grep -q .; then
-    echo "${INFO_ICON}${BLUE} 发现未提交的更改在当前分支。${NC}"
+    echo "${INFO_ICON}${BLUE} 发现未提交的更改在当前分支(${current_branch})。${NC}"
+    echo "${ERROR_ICON}${RED} 程序停止运行${NC}"
     exit 1
 fi
 
-# 更新下分支
-git pull
+# 检查当前分支是否未提交到远程仓库
+if [[ $(git status --porcelain -b) =~ ahead\ [0-9]+ ]] then
+    echo "${WARNING_ICON}${YELLOW} 发现当前分支未提交到远程。${NC}"
+    echo "${ERROR_ICON}${RED} 程序停止运行${NC}"
+    exit 1
+fi
 
-# 检查目标分支是否已经存在
+# 检查目标分支develop是否已经存在
 if git show-ref --verify --quiet "refs/heads/$target_branch"; then
-    echo "${INFO_ICON}${RED} 目标分支 ${target_branch} 已存在，正在切换到该分支。${NC}"
+    echo "${INFO_ICON}${RED} 目标分支 ${target_branch} 存在，正在切换到该分支。${NC}"
     git checkout $target_branch
-    echo "${INFO_ICON}${BLUE} 正在拉取代码...${NC}"
-    git pull
+    echo "${INFO_ICON}${BLUE} 拉取${target_branch}分支最新代码...${NC}"
+    if git pull 2>&1 | grep -qE 'error'; then
+        echo "${ERROR_ICON}${RED} 执行git pull失败,程序停止运行。${NC}"
+        exit 1
+    fi
 else
     echo "${INFO_ICON}${BLUE} 目标分支 ${target_branch} 不存在${NC}"
     exit 1
@@ -48,16 +54,19 @@ fi
 read -p "请输入需要创建的分支名:" newBranch
 
 if [ -z "$newBranch" ]; then
-    echo "${ERROR_ICON}${RED}请输入分支名${NC}"
+    echo "${ERROR_ICON}${RED}输入为空,程序停止运行${NC}"
     exit 1
 fi
 
 # 检查新创建的分支是否已经存在
 if git show-ref --verify --quiet "refs/heads/$newBranch"; then
-    echo "${INFO_ICON}${RED} 分支 ${newBranch} 已存在，正在切换到该分支。${NC}"
+    echo "${WARNING_ICON}${YELLOW} 分支 ${newBranch} 已存在，正在切换到该分支。${NC}"
     git checkout $newBranch
     echo "${INFO_ICON}${BLUE} 正在拉取代码...${NC}"
-    git pull
+    if git pull 2>&1 | grep -qE 'error'; then
+        echo "${ERROR_ICON}${RED} 执行git pull失败,程序停止运行。${NC}"
+        exit 1
+    fi
     echo "${SUCCESS_ICON}${GREEN} 拉取成功,程序执行完成${NC}"
     exit 1
 fi
@@ -65,5 +74,8 @@ fi
 echo "${INFO_ICON}${BLUE}正在创建${newBranch}分支...${NC}"
 git checkout -b $newBranch
 echo "${INFO_ICON}${BLUE} 正在将新分支 ${newBranch} 推送到远程仓库...${NC}"
-git push --set-upstream origin $newBranch
+if git push --set-upstream origin $newBranch 2>&1 | grep -qE 'error'; then
+    echo "${ERROR_ICON}${RED} 推送到远程仓库失败,程序停止运行。${NC}"
+    exit 1
+fi
 echo "${SUCCESS_ICON}${GREEN} 分支创建完成${NC}"
