@@ -31,7 +31,7 @@ if git status --porcelain | grep -q .; then
 fi
 
 # 检查当前分支是否未提交到远程仓库
-if [[ $(git status --porcelain -b) =~ ahead\ [0-9]+ ]] then
+if [[ $(git status --porcelain -b) =~ ahead\ [0-9]+ ]]; then
     echo "${WARNING_ICON}${YELLOW} 发现当前分支未提交到远程。${NC}"
     echo "${ERROR_ICON}${RED} 程序停止运行${NC}"
     exit 1
