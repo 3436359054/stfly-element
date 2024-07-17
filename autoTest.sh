@@ -38,24 +38,28 @@ if git status --porcelain | grep -q .; then
     
     # 执行git push
     echo "${INFO_ICON}${BLUE} 执行git push将分支($current_branch)推送到远程仓库...${NC}"
-    git push
+    if git push 2>&1 | grep -qE 'error'; then
+        echo "${ERROR_ICON}${RED} 执行git push失败,请检查网络连接或权限。${NC}"
+        exit 1
+    fi
     echo "${SUCCESS_ICON}${GREEN} 当前分支($current_branch)已成功提交并推送至远程仓库。${NC}"
 fi
 # 检查当前分支是否未提交到远程仓库
-git_status=$(git status --porcelain -b)
-if [[ $git_status =~ ahead\ [0-9]+ ]]; then
+if [[ $(git status --porcelain -b) =~ ahead\ [0-9]+ ]] then
     echo "${WARNING_ICON}${YELLOW} 发现当前分支未提交到远程。${NC}"
     # 执行git push
     echo "${INFO_ICON}${BLUE} 执行git push将分支($current_branch)推送到远程仓库...${NC}"
-    git push
+    if git push 2>&1 | grep -qE 'error'; then
+        echo "${ERROR_ICON}${RED} 执行git push失败,请检查网络连接或权限。${NC}"
+        exit 1
+    fi
     echo "${SUCCESS_ICON}${GREEN} 当前分支($current_branch)已成功提交并推送至远程仓库。${NC}"
 fi
 
 # 检查目标分支是否已经存在
 if git show-ref --verify --quiet "refs/heads/$target_branch"; then
-    echo "${INFO_ICON}${BLUE} 正在切换到${target_branch}...${NC}"
+    echo "${INFO_ICON}${BLUE} 目标分支 ${target_branch} 存在，正在切换并拉取最新代码。${NC}"
     git checkout $target_branch
-    echo "${INFO_ICON}${BLUE} 拉取最新代码...${NC}"
     git pull
 else
     echo "${ERROR_ICON}${RED} 目标分支 ${target_branch} 不存在。${NC}"
