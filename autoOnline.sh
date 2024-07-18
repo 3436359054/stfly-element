@@ -72,29 +72,32 @@ if git show-ref --verify --quiet "refs/heads/$target_branch"; then
 else
     echo "${INFO_ICON}${BLUE} 目标分支 ${target_branch} 不存在，正在切换到develop分支${NC}"
     if git show-ref --verify --quiet "refs/heads/develop"; then
-        echo "${ERROR_ICON}${RED} develop不存在,程序停止运行。${NC}"
-        exit 1
-    fi
-    if git checkout develop 2>&1 | grep -qE '(error|unmerged|both modified)'; then
-        echo "${ERROR_ICON}${RED} 切换到develop分支失败,程序停止运行。${NC}"
-        exit 1
-    fi
-    
-    echo "${INFO_ICON}${BLUE} 正在拉取develop分支最新代码...${NC}"
-    if git pull 2>&1 | grep -qE '(error|unmerged|both modified)'; then
-        echo "${ERROR_ICON}${RED} 执行git pull失败,程序停止运行。${NC}"
-        exit 1
-    fi
-    
-    echo "${INFO_ICON}${BLUE} 正在创建${target_branch}分支...${NC}"
-    if git checkout -b $target_branch 2>&1 | grep -qE '(error|unmerged|both modified)'; then
-        echo "${ERROR_ICON}${RED} 创建分支失败,程序停止运行。${NC}"
-        exit 1
-    fi
 
-    echo "${INFO_ICON}${BLUE} 正在将新分支 ${target_branch} 推送到远程仓库。${NC}"
-    if git push --set-upstream origin $target_branch 2>&1 | grep -qE '(error|unmerged|both modified)'; then
-        echo "${ERROR_ICON}${RED} 推送到远程仓库失败,程序停止运行。${NC}"
+        if git checkout develop 2>&1 | grep -qE '(error|unmerged|both modified)'; then
+            echo "${ERROR_ICON}${RED} 切换到develop分支失败,程序停止运行。${NC}"
+            exit 1
+        fi
+    
+        echo "${INFO_ICON}${BLUE} 正在拉取develop分支最新代码...${NC}"
+        if git pull 2>&1 | grep -qE '(error|unmerged|both modified)'; then
+            echo "${ERROR_ICON}${RED} 执行git pull失败,程序停止运行。${NC}"
+            exit 1
+        fi
+        
+        echo "${INFO_ICON}${BLUE} 正在创建${target_branch}分支...${NC}"
+        if git checkout -b $target_branch 2>&1 | grep -qE '(error|unmerged|both modified)'; then
+            echo "${ERROR_ICON}${RED} 创建分支失败,程序停止运行。${NC}"
+            exit 1
+        fi
+
+        echo "${INFO_ICON}${BLUE} 正在将新分支 ${target_branch} 推送到远程仓库。${NC}"
+        if git push --set-upstream origin $target_branch 2>&1 | grep -qE '(error|unmerged|both modified)'; then
+            echo "${ERROR_ICON}${RED} 推送到远程仓库失败,程序停止运行。${NC}"
+            exit 1
+        fi
+
+    else
+        echo "${ERROR_ICON}${RED} develop不存在,程序停止运行。${NC}"
         exit 1
     fi
 fi
