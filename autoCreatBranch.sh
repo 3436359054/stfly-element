@@ -41,7 +41,7 @@ fi
 # 检查目标分支develop是否已经存在
 if git show-ref --verify --quiet "refs/heads/$target_branch"; then
 
-    echo "${INFO_ICON}${RED} 目标分支 ${target_branch} 存在，正在切换到该分支。${NC}"
+    echo "${WARNING_ICON}${YELLOW} 目标分支 ${target_branch} 存在，正在切换到该分支。${NC}"
     if git checkout $target_branch 2>&1 | grep -qE '(error|unmerged|both modified)'; then
         echo "${ERROR_ICON}${RED} 切换到develop分支失败,程序停止运行。${NC}"
         exit 1
