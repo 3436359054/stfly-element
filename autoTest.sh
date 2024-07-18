@@ -38,26 +38,39 @@ if git status --porcelain | grep -q .; then
     
     # 执行git push
     echo "${INFO_ICON}${BLUE} 执行git push将分支($current_branch)推送到远程仓库...${NC}"
-    git push
+    if git push 2>&1 | grep -qE '(error|unmerged|both modified)'; then
+        echo "${ERROR_ICON}${RED} 执行git push失败,程序停止运行。${NC}"
+        exit 1
+    fi
     echo "${SUCCESS_ICON}${GREEN} 当前分支($current_branch)已成功提交并推送至远程仓库。${NC}"
 fi
 # 检查当前分支是否未提交到远程仓库
-git_status=$(git status --porcelain -b)
-if [[ $git_status =~ ahead\ [0-9]+ ]]; then
+if [[ $(git status --porcelain -b) =~ ahead\ [0-9]+ ]]; then
     echo "${WARNING_ICON}${YELLOW} 发现当前分支未提交到远程。${NC}"
     # 执行git push
     echo "${INFO_ICON}${BLUE} 执行git push将分支($current_branch)推送到远程仓库...${NC}"
-    git push
+    if git push 2>&1 | grep -qE '(error|unmerged|both modified)'; then
+        echo "${ERROR_ICON}${RED} 执行git push失败,程序停止运行。${NC}"
+        exit 1
+    fi
     echo "${SUCCESS_ICON}${GREEN} 当前分支($current_branch)已成功提交并推送至远程仓库。${NC}"
 fi
 
 # 检查目标分支是否已经存在
 if git show-ref --verify --quiet "refs/heads/$target_branch"; then
     echo "${INFO_ICON}${BLUE} 目标分支 ${target_branch} 存在，正在切换并拉取最新代码。${NC}"
-    git checkout $target_branch
-    git pull
+    if git checkout $target_branch 2>&1 | grep -qE '(error|unmerged|both modified)'; then
+        echo "${ERROR_ICON}${RED} 切换到test分支失败,程序停止运行。${NC}"
+        exit 1
+    fi
+
+    echo "${INFO_ICON}${BLUE} 正在拉取test分支最新代码...${NC}"
+    if git pull 2>&1 | grep -qE '(error|unmerged|both modified)'; then
+        echo "${ERROR_ICON}${RED} 执行git pull失败,程序停止运行。${NC}"
+        exit 1
+    fi
 else
-    echo "${ERROR_ICON}${RED} 目标分支 ${target_branch} 不存在。${NC}"
+    echo "${ERROR_ICON}${RED} 目标分支 ${target_branch} 不存在, 程序停止运行${NC}"
     exit 1
 fi
 
@@ -68,7 +81,7 @@ git merge $current_branch --no-ff
 # 检查合并是否有冲突
 merge_status=$(git status)
 if echo "$merge_status" | grep -qE '(unmerged|both modified)'; then
-    echo "${ERROR_ICON}${RED} 合并时发现冲突, 脚本停止运行${NC}"
+    echo "${ERROR_ICON}${RED} 合并时发现冲突, 程序停止运行${NC}"
     exit 1
 fi
 
@@ -79,5 +92,9 @@ fi
 
 # 推送合并结果到远程仓库
 echo "${INFO_ICON}${BLUE} 正在推送合并结果到远程仓库(${target_branch})...${NC}"
-git push
+if git push 2>&1 | grep -qE '(error|unmerged|both modified)'; then
+    echo "${ERROR_ICON}${RED} 执行git push失败,程序停止运行。${NC}"
+    exit 1
+fi
+
 echo "${SUCCESS_ICON}${GREEN} 合并结果已成功推送至远程仓库(${target_branch})。${NC}"
