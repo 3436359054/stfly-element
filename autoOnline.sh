@@ -51,6 +51,7 @@ if [[ $(git status --porcelain -b) =~ ahead\ [0-9]+ ]] then
 fi
 
 # 更新下分支
+echo "${INFO_ICON}${BLUE} 正在拉取最新代码...${NC}"
 if git pull 2>&1 | grep -qE '(error|unmerged|both modified)'; then
     echo "${ERROR_ICON}${RED} 执行git pull失败,程序停止运行。${NC}"
     exit 1
