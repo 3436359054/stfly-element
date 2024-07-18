@@ -27,8 +27,9 @@ current_date=$(date +%Y%m%d)
 target_branch="master-$current_date" # 目标分支
 current_branch=$(git rev-parse --abbrev-ref HEAD) # 当前分支
 
-echo "${INFO_ICON}${BLUE} 程序开始运行"
-echo "${INFO_ICON}${BLUE} 当前分支为${current_branch}。${NC}"
+echo "${SUCCESS_ICON}${GREEN} 程序开始运行"
+echo "${SUCCESS_ICON}${GREEN} 当前分支为:${current_branch}。${NC}"
+echo "${SUCCESS_ICON}${GREEN} 今日上线分支为:${target_branch}。${NC}"
 
 # 检查是否有未提交的更改
 if git status --porcelain | grep -q .; then
@@ -54,7 +55,7 @@ if [[ $(git status --porcelain -b) =~ ahead\ [0-9]+ ]]; then
 fi
 
 # 更新下分支
-echo "${INFO_ICON}${BLUE} 正在拉取最新代码...${NC}"
+echo "${INFO_ICON}${BLUE} 正在拉取当前分支${current_branch}最新代码...${NC}"
 if git pull 2>&1 | grep -qE '(error|unmerged|both modified)'; then
     echo "${ERROR_ICON}${RED} 执行git pull失败,程序停止运行。${NC}"
     exit 1
@@ -62,15 +63,19 @@ fi
 
 # 检查目标分支是否已经存在
 if git show-ref --verify --quiet "refs/heads/$target_branch"; then
-    echo "${INFO_ICON}${BLUE} 目标分支 ${target_branch} 存在，正在切换并拉取最新代码。${NC}"
-    git checkout $target_branch
+    echo "${INFO_ICON}${BLUE} 正在切换到今日上线分支 ${target_branch}...${NC}"
+    if git checkout $target_branch 2>&1 | grep -qE '(error|unmerged|both modified)'; then
+        echo "${ERROR_ICON}${RED} 切换到${target_branch}分支失败,程序停止运行。${NC}"
+        exit 1
+    fi
+
+    echo "${INFO_ICON}${BLUE} 正在拉取今日上线分支${target_branch}最新代码...${NC}"
     if git pull 2>&1 | grep -qE '(error|unmerged|both modified)'; then
         echo "${ERROR_ICON}${RED} 执行git pull失败,程序停止运行。${NC}"
         exit 1
     fi
-    echo "${SUCCESS_ICON}${GREEN} 拉取代码成功${NC}"
 else
-    echo "${INFO_ICON}${BLUE} 目标分支 ${target_branch} 不存在，正在切换到develop分支${NC}"
+    echo "${INFO_ICON}${BLUE} 今日上线分支 ${target_branch} 不存在，正在切换到develop分支...${NC}"
     if git show-ref --verify --quiet "refs/heads/develop"; then
 
         if git checkout develop 2>&1 | grep -qE '(error|unmerged|both modified)'; then
