@@ -40,10 +40,15 @@ fi
 
 # 检查目标分支develop是否已经存在
 if git show-ref --verify --quiet "refs/heads/$target_branch"; then
+
     echo "${INFO_ICON}${RED} 目标分支 ${target_branch} 存在，正在切换到该分支。${NC}"
-    git checkout $target_branch
+    if git checkout $target_branch 2>&1 | grep -qE '(error|unmerged|both modified)'; then
+        echo "${ERROR_ICON}${RED} 切换到develop分支失败,程序停止运行。${NC}"
+        exit 1
+    fi
+
     echo "${INFO_ICON}${BLUE} 正在拉取${target_branch}分支最新代码...${NC}"
-    if git pull 2>&1 | grep -qE 'error'; then
+    if git pull 2>&1 | grep -qE '(error|unmerged|both modified)'; then
         echo "${ERROR_ICON}${RED} 执行git pull失败,程序停止运行。${NC}"
         exit 1
     fi
@@ -53,7 +58,6 @@ else
 fi
 
 read -p "请输入需要创建的分支名:" newBranch
-
 if [ -z "$newBranch" ]; then
     echo "${ERROR_ICON}${RED}输入为空,程序停止运行${NC}"
     exit 1
@@ -62,21 +66,31 @@ fi
 # 检查新创建的分支是否已经存在
 if git show-ref --verify --quiet "refs/heads/$newBranch"; then
     echo "${WARNING_ICON}${YELLOW} 分支 ${newBranch} 已存在，正在切换到该分支。${NC}"
-    git checkout $newBranch
+    if git checkout $newBranch 2>&1 | grep -qE '(error|unmerged|both modified)'; then
+        echo "${ERROR_ICON}${RED} 切换到${newBranch}分支失败,程序停止运行。${NC}"
+        exit 1
+    fi
+
     echo "${INFO_ICON}${BLUE} 正在拉取${newBranch}分支最新代码...${NC}"
-    if git pull 2>&1 | grep -qE 'error'; then
+    if git pull 2>&1 | grep -qE '(error|unmerged|both modified)'; then
         echo "${ERROR_ICON}${RED} 执行git pull失败,程序停止运行。${NC}"
         exit 1
     fi
+
     echo "${SUCCESS_ICON}${GREEN} 拉取成功,程序执行完成${NC}"
     exit 1
 fi
 
 echo "${INFO_ICON}${BLUE}正在创建${newBranch}分支...${NC}"
-git checkout -b $newBranch
+if git checkout -b $newBranch 2>&1 | grep -qE '(error|unmerged|both modified)'; then
+    echo "${ERROR_ICON}${RED} 创建分支失败,程序停止运行。${NC}"
+    exit 1
+fi
+
 echo "${INFO_ICON}${BLUE} 正在将新分支 ${newBranch} 推送到远程仓库...${NC}"
-if git push --set-upstream origin $newBranch 2>&1 | grep -qE 'error'; then
+if git push --set-upstream origin $newBranch 2>&1 | grep -qE '(error|unmerged|both modified)'; then
     echo "${ERROR_ICON}${RED} 推送到远程仓库失败,程序停止运行。${NC}"
     exit 1
 fi
+
 echo "${SUCCESS_ICON}${GREEN} 分支创建完成${NC}"
