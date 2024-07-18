@@ -24,6 +24,9 @@ ERROR_ICON="[✗]"
 target_branch="develop" # 目标分支
 current_branch=$(git rev-parse --abbrev-ref HEAD) # 当前分支
 
+echo "${INFO_ICON}${BLUE} 程序开始运行"
+echo "${INFO_ICON}${BLUE} 当前分支为${current_branch}。${NC}"
+
 # 检查是否有未提交的更改
 if git status --porcelain | grep -q .; then
     echo "${INFO_ICON}${BLUE} 发现未提交的更改在当前分支(${current_branch})。${NC}"
