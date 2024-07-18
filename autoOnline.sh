@@ -90,7 +90,7 @@ else
             exit 1
         fi
 
-        echo "${INFO_ICON}${BLUE} 正在将新分支 ${target_branch} 推送到远程仓库。${NC}"
+        echo "${INFO_ICON}${BLUE} 正在将新分支 ${target_branch} 推送到远程仓库...${NC}"
         if git push --set-upstream origin $target_branch 2>&1 | grep -qE '(error|unmerged|both modified)'; then
             echo "${ERROR_ICON}${RED} 推送到远程仓库失败,程序停止运行。${NC}"
             exit 1
