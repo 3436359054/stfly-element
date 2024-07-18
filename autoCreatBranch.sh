@@ -4,7 +4,8 @@
 # 从develop分支创建新分支
 
 # 注意事项:
-# 可以在任意分支下执行,执行后自动跳转到新创建的分支
+# 1. 可以在任意分支下执行,执行后自动跳转到新创建的分支
+# 2. 遇到冲突,网络中断等其他报错,脚本会给出提示并停止运行
 
 # ANSI color codes for colored output
 RED='\033[0;31m'
@@ -41,7 +42,7 @@ fi
 if git show-ref --verify --quiet "refs/heads/$target_branch"; then
     echo "${INFO_ICON}${RED} 目标分支 ${target_branch} 存在，正在切换到该分支。${NC}"
     git checkout $target_branch
-    echo "${INFO_ICON}${BLUE} 拉取${target_branch}分支最新代码...${NC}"
+    echo "${INFO_ICON}${BLUE} 正在拉取${target_branch}分支最新代码...${NC}"
     if git pull 2>&1 | grep -qE 'error'; then
         echo "${ERROR_ICON}${RED} 执行git pull失败,程序停止运行。${NC}"
         exit 1
@@ -62,7 +63,7 @@ fi
 if git show-ref --verify --quiet "refs/heads/$newBranch"; then
     echo "${WARNING_ICON}${YELLOW} 分支 ${newBranch} 已存在，正在切换到该分支。${NC}"
     git checkout $newBranch
-    echo "${INFO_ICON}${BLUE} 正在拉取代码...${NC}"
+    echo "${INFO_ICON}${BLUE} 正在拉取${newBranch}分支最新代码...${NC}"
     if git pull 2>&1 | grep -qE 'error'; then
         echo "${ERROR_ICON}${RED} 执行git pull失败,程序停止运行。${NC}"
         exit 1
