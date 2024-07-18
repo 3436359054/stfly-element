@@ -23,7 +23,7 @@ ERROR_ICON="[✗]"
 
 target_branch="test" # 目标分支
 current_branch=$(git rev-parse --abbrev-ref HEAD) # 当前分支
-
+echo "${INFO_ICON}${BLUE} 程序开始运行"
 # 检查是否有未提交的更改
 if git status --porcelain | grep -q .; then
     echo "${WARNING_ICON}${YELLOW} 发现未提交的更改在当前分支$current_branch。${NC}"
@@ -58,7 +58,7 @@ fi
 
 # 检查目标分支是否已经存在
 if git show-ref --verify --quiet "refs/heads/$target_branch"; then
-    echo "${INFO_ICON}${BLUE} 目标分支 ${target_branch} 存在，正在切换并拉取最新代码...${NC}"
+    echo "${INFO_ICON}${BLUE} 正在切换到${target_branch}分支...${NC}"
     if git checkout $target_branch 2>&1 | grep -qE '(error|unmerged|both modified)'; then
         echo "${ERROR_ICON}${RED} 切换到test分支失败,程序停止运行。${NC}"
         exit 1
