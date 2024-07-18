@@ -81,7 +81,7 @@ if git show-ref --verify --quiet "refs/heads/$newBranch"; then
     exit 1
 fi
 
-echo "${INFO_ICON}${BLUE}正在创建${newBranch}分支...${NC}"
+echo "${INFO_ICON}${BLUE}正在创建并切换到${newBranch}分支...${NC}"
 if git checkout -b $newBranch 2>&1 | grep -qE '(error|unmerged|both modified)'; then
     echo "${ERROR_ICON}${RED} 创建分支失败,程序停止运行。${NC}"
     exit 1
