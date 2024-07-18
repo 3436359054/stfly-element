@@ -68,7 +68,10 @@ if git show-ref --verify --quiet "refs/heads/$target_branch"; then
     echo "${SUCCESS_ICON}${GREEN} 拉取代码成功${NC}"
 else
     echo "${INFO_ICON}${BLUE} 目标分支 ${target_branch} 不存在，正在切换到develop分支${NC}"
-
+    if git show-ref --verify --quiet "refs/heads/develop"; then
+        echo "${ERROR_ICON}${RED} develop不存在,程序停止运行。${NC}"
+        exit 1
+    fi
     if git checkout develop 2>&1 | grep -qE '(error|unmerged|both modified)'; then
         echo "${ERROR_ICON}${RED} 切换到develop分支失败,程序停止运行。${NC}"
         exit 1
