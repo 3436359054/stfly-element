@@ -24,9 +24,12 @@ ERROR_ICON="[✗]"
 target_branch="develop" # 目标分支
 current_branch=$(git rev-parse --abbrev-ref HEAD) # 当前分支
 
+echo "${SUCCESS_ICON}${GREEN} 程序开始运行"
+echo "${SUCCESS_ICON}${GREEN} 当前分支为: ${current_branch}。${NC}"
+
 # 检查是否有未提交的更改
 if git status --porcelain | grep -q .; then
-    echo "${INFO_ICON}${BLUE} 发现未提交的更改在当前分支(${current_branch})。${NC}"
+    echo "${INFO_ICON}${BLUE} 发现未提交的更改在当前分支 ${current_branch}。${NC}"
     echo "${ERROR_ICON}${RED} 程序停止运行${NC}"
     exit 1
 fi
@@ -47,13 +50,13 @@ if git show-ref --verify --quiet "refs/heads/$target_branch"; then
     git pull
 =======
 
-    echo "${WARNING_ICON}${YELLOW} 目标分支 ${target_branch} 存在，正在切换到该分支。${NC}"
+    echo "${INFO_ICON}${BLUE} 正在切换到 ${target_branch}分支...${NC}"
     if git checkout $target_branch 2>&1 | grep -qE '(error|unmerged|both modified)'; then
         echo "${ERROR_ICON}${RED} 切换到develop分支失败,程序停止运行。${NC}"
         exit 1
     fi
 
-    echo "${INFO_ICON}${BLUE} 正在拉取${target_branch}分支最新代码...${NC}"
+    echo "${INFO_ICON}${BLUE} 正在拉取 ${target_branch}分支最新代码...${NC}"
     if git pull 2>&1 | grep -qE '(error|unmerged|both modified)'; then
         echo "${ERROR_ICON}${RED} 执行git pull失败,程序停止运行。${NC}"
         exit 1
@@ -74,11 +77,11 @@ fi
 if git show-ref --verify --quiet "refs/heads/$newBranch"; then
     echo "${WARNING_ICON}${YELLOW} 分支 ${newBranch} 已存在，正在切换到该分支。${NC}"
     if git checkout $newBranch 2>&1 | grep -qE '(error|unmerged|both modified)'; then
-        echo "${ERROR_ICON}${RED} 切换到${newBranch}分支失败,程序停止运行。${NC}"
+        echo "${ERROR_ICON}${RED} 切换到 ${newBranch} 分支失败,程序停止运行。${NC}"
         exit 1
     fi
 
-    echo "${INFO_ICON}${BLUE} 正在拉取${newBranch}分支最新代码...${NC}"
+    echo "${INFO_ICON}${BLUE} 正在拉取 ${newBranch} 分支最新代码...${NC}"
     if git pull 2>&1 | grep -qE '(error|unmerged|both modified)'; then
         echo "${ERROR_ICON}${RED} 执行git pull失败,程序停止运行。${NC}"
         exit 1
@@ -88,7 +91,7 @@ if git show-ref --verify --quiet "refs/heads/$newBranch"; then
     exit 1
 fi
 
-echo "${INFO_ICON}${BLUE}正在创建并切换到${newBranch}分支...${NC}"
+echo "${INFO_ICON}${BLUE}正在创建并切换到 ${newBranch} 分支...${NC}"
 if git checkout -b $newBranch 2>&1 | grep -qE '(error|unmerged|both modified)'; then
     echo "${ERROR_ICON}${RED} 创建分支失败,程序停止运行。${NC}"
     exit 1

@@ -1,10 +1,10 @@
 #!/bin/bash
 # 脚本说明
 # 功能:
-# 把当前分支提交到test分支
+# 把当前分支提交到develop分支
 
 # 注意事项
-# 1. 当前分支存在未提交的更改会自动提交
+# 1. 当前分支存在未提交会给出提示
 # 2. 遇到冲突脚本会停止
 
 # ANSI color codes for colored output
@@ -21,17 +21,18 @@ WARNING_ICON="[!]"
 SUCCESS_ICON="[✔]"
 ERROR_ICON="[✗]"
 
-target_branch="test" # 目标分支
+target_branch="develop" # 目标分支
 current_branch=$(git rev-parse --abbrev-ref HEAD) # 当前分支
 
 echo "${SUCCESS_ICON}${GREEN} 程序开始运行"
 echo "${SUCCESS_ICON}${GREEN} 当前分支为: ${current_branch}。${NC}"
+echo "${SUCCESS_ICON}${GREEN} 目标分支: ${target_branch}。${NC}"
 
 # 检查是否有未提交的更改
 if git status --porcelain | grep -q .; then
     echo "${WARNING_ICON}${YELLOW} 发现未提交的更改在当前分支 ${current_branch}。${NC}"
-    read -p "是否提交更改(y/n): " changeFlag
-    if [[ "$changeFlag" == "y" ]]; then
+    read -p "${CYAN}是否提交更改(y/n): ${NC}" changeFlag
+    if [ "$changeFlag" = "y" ]; then
         # 执行git add .
         echo "${INFO_ICON}${BLUE} 执行git add ."
         git add .
@@ -57,7 +58,7 @@ fi
 if [[ $(git status --porcelain -b) =~ ahead\ [0-9]+ ]]; then
     echo "${WARNING_ICON}${YELLOW} 发现当前分支 ${current_branch} 未提交到远程。${NC}"
     read -p "是否提交更改(y/n):" pushFlag
-    if [[ "$pushFlag" == "y" ]]; then
+    if [ "$pushFlag" = "y" ] then
         # 执行git push
         echo "${INFO_ICON}${BLUE} 执行git push将分支 ${current_branch} 推送到远程仓库...${NC}"
         if git push 2>&1 | grep -qE '(error|unmerged|both modified)'; then
