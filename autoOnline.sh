@@ -33,29 +33,49 @@ echo "${SUCCESS_ICON}${GREEN} 今日上线分支为: ${target_branch}。${NC}"
 
 # 检查是否有未提交的更改
 if git status --porcelain | grep -q .; then
-    echo "${WARNING_ICON}${YELLOW} 发现未提交的更改在当前分支。${NC}"
-    echo "${ERROR_ICON}${RED} 程序停止运行。${NC}"
-    exit 1
-    # git add .
-    
-    # # 执行提交
-    # git commit -m "$current_branch"
-    
-    # # 推送提交到远程仓库
-    # echo "${INFO_ICON}${BLUE} 正在推送当前分支($current_branch)到远程仓库...${NC}"
-    # git push
-    # echo "${SUCCESS_ICON}${GREEN} 当前分支($current_branch)已成功提交并推送至远程仓库。${NC}"
+    echo "${WARNING_ICON}${YELLOW} 发现未提交的更改在当前分支 ${current_branch}。${NC}"
+    read -p "${CYAN}是否提交更改(y/n): ${NC}" changeFlag
+    if [ "$changeFlag" = "y" ]; then
+        # 执行git add .
+        echo "${INFO_ICON}${BLUE} 执行git add ."
+        git add .
+        
+        # 执行git commit -m $current_branch...
+        echo "${INFO_ICON}${BLUE} 执行git commit -m ${current_branch}...${NC}"
+        git commit -m "$current_branch"
+        
+        # 执行git push
+        echo "${INFO_ICON}${BLUE} 执行git push将分支 ${current_branch} 推送到远程仓库...${NC}"
+        if git push 2>&1 | grep -qE '(error|unmerged|both modified)'; then
+            echo "${ERROR_ICON}${RED} 执行git push失败,程序停止运行。${NC}"
+            exit 1
+        fi
+        echo "${SUCCESS_ICON}${GREEN} 当前分支 ${current_branch} 已成功提交并推送至远程仓库。${NC}"
+    else
+        echo "${ERROR_ICON}${RED} 程序停止运行${NC}"
+        exit 1
+    fi
 fi
 
 # 检查当前分支是否未提交到远程仓库
 if [[ $(git status --porcelain -b) =~ ahead\ [0-9]+ ]]; then
-    echo "${WARNING_ICON}${YELLOW} 发现当前分支未提交到远程。${NC}"
-    echo "${ERROR_ICON}${RED} 程序停止运行。${NC}"
-    exit 1
+    echo "${WARNING_ICON}${YELLOW} 发现当前分支 ${current_branch} 未提交到远程。${NC}"
+    read -p "是否提交更改(y/n):" pushFlag
+    if [ "$pushFlag" = "y" ] then
+        # 执行git push
+        echo "${INFO_ICON}${BLUE} 执行git push将分支 ${current_branch} 推送到远程仓库...${NC}"
+        if git push 2>&1 | grep -qE '(error|unmerged|both modified)'; then
+            echo "${ERROR_ICON}${RED} 执行git push失败,程序停止运行。${NC}"
+            exit 1
+        fi
+        echo "${SUCCESS_ICON}${GREEN} 当前分支 ${current_branch} 已成功提交并推送至远程仓库。${NC}"
+    else
+        echo "${ERROR_ICON}${RED} 程序停止运行${NC}"
+        exit 1
+    fi
 fi
 
-# 更新下分支
-echo "${INFO_ICON}${BLUE} 正在拉取当前分支 ${current_branch} 最新代码...${NC}"
+# 拉取最新代码
 if git pull 2>&1 | grep -qE '(error|unmerged|both modified)'; then
     echo "${ERROR_ICON}${RED} 执行git pull失败,程序停止运行。${NC}"
     exit 1

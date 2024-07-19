@@ -1,10 +1,10 @@
 #!/bin/bash
 # 脚本说明
 # 功能:
-# 把当前分支提交到test分支
+# 把当前分支提交到develop分支
 
 # 注意事项
-# 1. 当前分支存在未提交的更改会自动提交
+# 1. 当前分支存在未提交会给出提示
 # 2. 遇到冲突脚本会停止
 
 # ANSI color codes for colored output
@@ -21,11 +21,12 @@ WARNING_ICON="[!]"
 SUCCESS_ICON="[✔]"
 ERROR_ICON="[✗]"
 
-target_branch="test" # 目标分支
+target_branch="develop" # 目标分支
 current_branch=$(git rev-parse --abbrev-ref HEAD) # 当前分支
 
 echo "${SUCCESS_ICON}${GREEN} 程序开始运行"
 echo "${SUCCESS_ICON}${GREEN} 当前分支为: ${current_branch}。${NC}"
+echo "${SUCCESS_ICON}${GREEN} 目标分支: ${target_branch}。${NC}"
 
 # 检查是否有未提交的更改
 if git status --porcelain | grep -q .; then
