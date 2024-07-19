@@ -30,7 +30,7 @@ echo "${SUCCESS_ICON}${GREEN} 当前分支为: ${current_branch}。${NC}"
 # 检查是否有未提交的更改
 if git status --porcelain | grep -q .; then
     echo "${WARNING_ICON}${YELLOW} 发现未提交的更改在当前分支 ${current_branch}。${NC}"
-    read -p "${CYAN}是否提交更改(y/n): ${NC}" changeFlag
+    read -p "${BLUE}是否提交更改(y/n): ${NC}" changeFlag
     if [ "$changeFlag" = "y" ]; then
         # 执行git add .
         echo "${INFO_ICON}${BLUE} 执行git add ."
