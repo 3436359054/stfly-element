@@ -43,12 +43,6 @@ fi
 
 # 检查目标分支develop是否已经存在
 if git show-ref --verify --quiet "refs/heads/$target_branch"; then
-<<<<<<< HEAD
-    echo "${INFO_ICON}${BLUE} 正在切换到${target_branch}分支...${NC}"
-    git checkout $target_branch
-    echo "${INFO_ICON}${BLUE} 正在拉取代码...${NC}"
-    git pull
-=======
 
     echo "${INFO_ICON}${BLUE} 正在切换到 ${target_branch}分支...${NC}"
     if git checkout $target_branch 2>&1 | grep -qE '(error|unmerged|both modified)'; then
@@ -61,7 +55,6 @@ if git show-ref --verify --quiet "refs/heads/$target_branch"; then
         echo "${ERROR_ICON}${RED} 执行git pull失败,程序停止运行。${NC}"
         exit 1
     fi
->>>>>>> demo33
 else
     echo "${INFO_ICON}${BLUE} 目标分支 ${target_branch} 不存在${NC}"
     exit 1
@@ -98,14 +91,9 @@ if git checkout -b $newBranch 2>&1 | grep -qE '(error|unmerged|both modified)'; 
 fi
 
 echo "${INFO_ICON}${BLUE} 正在将新分支 ${newBranch} 推送到远程仓库...${NC}"
-<<<<<<< HEAD
-git push --set-upstream origin $newBranch
-echo "${SUCCESS_ICON}${GREEN} 新分支${newBranch}创建完成${NC}"
-=======
 if git push --set-upstream origin $newBranch 2>&1 | grep -qE '(error|unmerged|both modified)'; then
     echo "${ERROR_ICON}${RED} 推送到远程仓库失败,程序停止运行。${NC}"
     exit 1
 fi
 
 echo "${SUCCESS_ICON}${GREEN} 分支创建完成${NC}"
->>>>>>> demo33
