@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, inject } from 'vue'
 
 import type { ButtonProps, ButtonEmits, ButtonInstance } from "./types";
+import { BUTTON_GROUP_CTX_KEY } from "./constants";
 import { throttle } from 'lodash-es';
 import FlyIcon from "../Icon/Icon.vue";
 
@@ -17,12 +18,21 @@ const props = withDefaults(defineProps<ButtonProps>(), {
 const emits = defineEmits<ButtonEmits>();
 
 const slots = defineSlots();
+const buttonGroupCtx = inject(BUTTON_GROUP_CTX_KEY, void 0);
 
 const _ref = ref<HTMLButtonElement>();
+const size = computed(() => buttonGroupCtx?.size ?? props.size ?? "");
+const type = computed(() => buttonGroupCtx?.type ?? props.type ?? "");
+const disabled = computed(
+  () => props.disabled || buttonGroupCtx?.disabled || false
+);
  
 defineExpose<ButtonInstance>({
-  ref: _ref
-})
+  ref: _ref,
+  disabled,
+  size,
+  type,
+});
 
 const iconStyle = computed(() => ({
   marginRight: slots.default ? "6px" : "0px"
@@ -32,7 +42,11 @@ const handleBtnClick = (e: MouseEvent) => {
   emits("click", e);
 }
 
-const handlBtneCLickThrottle = throttle(handleBtnClick, props.throttleDuration);
+const handlBtneCLickThrottle = throttle(
+  handleBtnClick, 
+  props.throttleDuration,
+  { trailing: false }
+);
 
 </script>
 <template>
