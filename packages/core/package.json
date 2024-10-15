@@ -1,6 +1,6 @@
 {
   "name": "stfly-element",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "组件库 vue3 + ts",
   "type": "module",
   "main": "./dist/umd/index.umd.cjs",
