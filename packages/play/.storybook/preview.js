@@ -1,3 +1,5 @@
+import 'stfly-element/dist/style.css';
+
 /** @type { import('@storybook/vue3').Preview } */
 const preview = {
   parameters: {
